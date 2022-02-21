@@ -1,9 +1,9 @@
 import asyncio
-from exceptions import *
 import setup
 import datetime
 import time
 from settings import *
+import handlers
 
 async def main():
     start_time = time.time()
@@ -17,7 +17,7 @@ async def main():
     print("---------------------------------")
 
     properties = await properties_task
-    properties_dict = properties
+    Properties.properties = properties
 
     updater, dispatcher = setup.init_api_con(properties["API_KEY"])
     await setup.load_handlers(dispatcher)

@@ -1,5 +1,8 @@
-VERSION_NO = '0.0.1'
-VERSION_DATE = '19.02.2022'
+VERSION_NO = '0.1.1a'
+VERSION_DATE = '21.02.2022'
+
+AUTHORS = ("In1th","SenayPL")
+GITHUB = "https://github.com/In1th/akalice-tg-bot"
 
 TITTLE = '''
 ░█████╗░██╗░░██╗░█████╗░██╗░░░░░██╗░█████╗░███████╗  ██████╗░░█████╗░████████╗
@@ -9,4 +12,6 @@ TITTLE = '''
 ██║░░██║██║░╚██╗██║░░██║███████╗██║╚█████╔╝███████╗  ██████╦╝╚█████╔╝░░░██║░░░
 ╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚═╝╚══════╝╚═╝░╚════╝░╚══════╝  ╚═════╝░░╚════╝░░░░╚═╝░░░'''
 
-properties_dict = dict()
+
+class Properties:
+    properties: dict = dict()
