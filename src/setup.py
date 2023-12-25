@@ -2,7 +2,7 @@ import asyncio
 from json import load
 import datetime
 import handlers
-from telegram.ext import Updater, Dispatcher, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, Dispatcher, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 
 
 async def load_properties(name: str) -> dict:
@@ -55,15 +55,17 @@ async def load_handlers(ds: Dispatcher) -> None:
     """
 
     command_handlers_task = asyncio.create_task(handlers.get_handlers(handlers.CommandHandlers))
-    message_handlers_task = asyncio.create_task(handlers.get_handlers(handlers.MessageHandlers))
 
     command_handlers = await command_handlers_task
-    message_handlers = await message_handlers_task
 
     for command_name, command_func in command_handlers.items():
         ds.add_handler(CommandHandler(command_name, command_func, run_async=True))
 
-    for message_func in message_handlers.values():
-        ds.add_handler(MessageHandler(Filters.text, message_func, run_async=True))
+    ds.add_handler(MessageHandler(Filters.status_update.new_chat_members,
+                                  handlers.MessageHandlers.listen_new_members, run_async=True))
+
+    ds.add_handler(CommandHandler('start', handlers.Verify.verify, filters= Filters.regex('weryfikacja'), run_async=True))
+
+    ds.add_handler(CallbackQueryHandler(handlers.QueryHandler.query, run_async=True))
 
     ds.add_error_handler(handlers.error)
