@@ -7,9 +7,10 @@ from telegram import ChatMember, InlineKeyboardMarkup, InlineKeyboardButton, Cha
 from telegram.update import Update
 from telegram.ext import CallbackContext
 from telegram.utils import helpers
+import requests
 
 new_users = list()
-
+papaj_used = []
 
 async def get_handlers(handler_class) -> dict:
     '''
@@ -82,7 +83,6 @@ def error(update: Update, context: CallbackContext) -> None:
     """
 
     print(f"{datetime.datetime.now()} ERR!》\n{update}\n caused error {context.error}!")
-
 
 class CommandHandlers:
     """
@@ -266,6 +266,44 @@ class CommandHandlers:
 
         '''
         pass
+
+    @staticmethod
+    def papaj(update: Update, context: CallbackContext) -> None:
+        """
+        komenda papieska z memami
+
+        Parameters
+        ----------
+        update
+            Obiekt telegram.ext.Update posiadający informacje o requeście.
+        context
+            Nie używany.
+        """
+        papaj_ok = True
+        for elem in papaj_used:
+            if elem == update.message.from_user.id:
+                papaj_ok = False
+                break
+
+        if papaj_ok:
+            print(log_str(update.message.from_user.username, 'papaj'))
+            time = datetime.datetime.now()
+            if time.hour == 21 and time.minute == 37:
+                response = requests.get(Properties.properties["cenzopapa_memes_index"])
+                if response.status_code == 200:
+                    image_urls = [url.strip() for url in response.text.splitlines() if url.strip()]
+                    random_image_url = random.choice(image_urls)
+                    if random_image_url.lower().endswith('.gif'):
+                        update.message.reply_animation(random_image_url)
+                    else:
+                        update.message.reply_photo(random_image_url)
+                    papaj_used.append(update.message.from_user.id)
+                else:
+                    update.message.reply_text(f"HTTP 2137 ERROR - PAPAJ MEMES NOT FOUND")
+            else:
+                update.message.reply_text("Dokładnie o 21:37 możesz tego użyć!")
+        else:
+            update.message.reply_text("Tylko raz dziennie możesz tego użyć!")
 
 class MessageHandlers:
     """

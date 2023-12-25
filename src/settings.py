@@ -1,5 +1,5 @@
-VERSION_NO = '0.3'
-VERSION_DATE = '25.12.2023'
+VERSION_NO = '0.3a'
+VERSION_DATE = '26.12.2023'
 
 AUTHORS = ("In1th","SenayPL")
 GITHUB = "https://github.com/In1th/akalice-tg-bot"
