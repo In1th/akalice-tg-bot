@@ -341,6 +341,25 @@ class MessageHandlers:
             update.message.reply_text(
                 f'Witamy @{update.message.new_chat_members[0].username} na grupie Białystok i Akalice!\n\nAby móc pisać na tym czacie musisz przejść weryfikację poniżej:',
                 reply_markup=InlineKeyboardMarkup([[button]]))
+    
+    @staticmethod
+    def listen_phrase(update: Update, context: CallbackContext) -> None:
+        """
+        Handler słuchający frazy na chacie
+
+        Parameters
+        ----------
+        update
+            Obiekt telegram.ext.Update posiadający informacje o requeście.
+        context
+            Nie używany.
+
+        """
+        if "xd" in update.message.text.lower() and random.randint(1, 100) > 80:
+            if random.randint(1, 100) > 50:
+                update.message.reply_text("xD")
+            else:
+                update.message.reply_text("no beka w chuj xD")
 
 
 class Verify:

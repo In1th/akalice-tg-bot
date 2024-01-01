@@ -63,6 +63,9 @@ async def load_handlers(ds: Dispatcher) -> None:
 
     ds.add_handler(MessageHandler(Filters.status_update.new_chat_members,
                                   handlers.MessageHandlers.listen_new_members, run_async=True))
+    
+    ds.add_handler(MessageHandler(Filters.update.message,
+                                  handlers.MessageHandlers.listen_phrase, run_async=True))
 
     ds.add_handler(CommandHandler('start', handlers.Verify.verify, filters= Filters.regex('weryfikacja'), run_async=True))
 
