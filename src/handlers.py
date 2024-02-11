@@ -11,6 +11,8 @@ import requests
 
 new_users = list()
 papaj_used = []
+global mp4_used
+mp4_used = False
 
 async def get_handlers(handler_class) -> dict:
     '''
@@ -279,6 +281,7 @@ class CommandHandlers:
         context
             Nie używany.
         """
+        global mp4_used
         papaj_ok = True
         for elem in papaj_used:
             if elem == update.message.from_user.id:
@@ -292,11 +295,16 @@ class CommandHandlers:
                 response = requests.get(Properties.properties["cenzopapa_memes_index"])
                 if response.status_code == 200:
                     image_urls = [url.strip() for url in response.text.splitlines() if url.strip()]
-                    random_image_url = random.choice(image_urls)
-                    if random_image_url.lower().endswith('.gif'):
-                        update.message.reply_animation(random_image_url)
+                    random_content_url = random.choice(image_urls)
+                    if not mp4_used and time.day == 11: # newag xd
+                        mp4_used = True
+                        random_content_url = "https://enak.pl/abot/video_2024-02-11_20-12-42.mp4"
+                    if random_content_url.lower().endswith('.gif'):
+                        update.message.reply_animation(random_content_url)
+                    elif random_content_url.lower().endswith('.mp4'):
+                        update.message.reply_video(random_content_url)
                     else:
-                        update.message.reply_photo(random_image_url)
+                        update.message.reply_photo(random_content_url)
                     papaj_used.append(update.message.from_user.id)
                 else:
                     update.message.reply_text(f"HTTP 2137 ERROR - PAPAJ MEMES NOT FOUND")
@@ -355,7 +363,7 @@ class MessageHandlers:
             Nie używany.
 
         """
-        if "xd" in update.message.text.lower() and random.randint(1, 100) > 80:
+        if "xd" in update.message.text.lower() and random.randint(1, 100) > 96:
             if random.randint(1, 100) > 50:
                 update.message.reply_text("xD")
             else:
