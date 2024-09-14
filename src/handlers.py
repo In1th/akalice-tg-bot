@@ -279,10 +279,34 @@ class CommandHandlers:
         context
             Nie używany.
         """
-        print(log_str(update.message.from_user.username, 'papaj'))
-        time = datetime.datetime.now()
+        papaj_ok = True
+        for elem in papaj_used:
+            if elem == update.message.from_user.id:
+                papaj_ok = False
+                break
 
-        if update.message.from_user.id in papaj_used:
+        if papaj_ok:
+            print(log_str(update.message.from_user.username, 'papaj'))
+            time = datetime.datetime.now()
+            if time.hour == 21 and time.minute == 37:
+                response = requests.get(Properties.properties["cenzopapa_memes_index"])
+                if response.status_code == 200:
+                    image_urls = [url.strip() for url in response.text.splitlines() if url.strip()]
+                    random_content_url = random.choice(image_urls)
+                    if random_content_url.lower().endswith('.gif'):
+                        update.message.reply_animation(random_content_url)
+                    elif random_content_url.lower().endswith('.mp4'):
+                        update.message.reply_video(random_content_url)
+                    elif random_content_url.lower().endswith('.webp'):
+                        update.message.reply_document(random_content_url)
+                    else:
+                        update.message.reply_photo(random_content_url)
+                    papaj_used.append(update.message.from_user.id)
+                else:
+                    update.message.reply_text(f"HTTP 2137 ERROR - PAPAJ MEMES NOT FOUND")
+            else:
+                update.message.reply_text("Dokładnie o 21:37 możesz tego użyć!")
+        else:
             update.message.reply_text("Tylko raz dziennie możesz tego użyć!")
             return 
             
@@ -343,6 +367,25 @@ class MessageHandlers:
             update.message.reply_text(
                 f'Witamy @{update.message.new_chat_members[0].username} na grupie Białystok i Akalice!\n\nAby móc pisać na tym czacie musisz przejść weryfikację poniżej:',
                 reply_markup=InlineKeyboardMarkup([[button]]))
+    
+    @staticmethod
+    def listen_phrase(update: Update, context: CallbackContext) -> None:
+        """
+        Handler słuchający frazy na chacie
+
+        Parameters
+        ----------
+        update
+            Obiekt telegram.ext.Update posiadający informacje o requeście.
+        context
+            Nie używany.
+
+        """
+        if "xd" in update.message.text.lower() and random.randint(1, 100) > 96:
+            if random.randint(1, 100) > 50:
+                update.message.reply_text("xD")
+            else:
+                update.message.reply_text("no beka w chuj xD")
 
 
 class Verify:
